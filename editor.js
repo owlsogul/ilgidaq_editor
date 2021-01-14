@@ -1,7 +1,28 @@
 var editorContainer = document.getElementById("editor-container");
 var editor = document.getElementById("editor");
 var editorData = {
-    paragraphCursor: false
+    paragraphCursor: null,
+    imageMap: {}
+}
+
+var interface = {
+    
+    // call to platform
+    onRequestImageUpload: (id)=>{ console.log("on request image upload") },
+
+    // call from platform
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {string} path if null, remove image
+     */
+    setImagePath: (id, path)=>{
+        if (id == null) {
+            alert("잘못된 이미지 입니다.")
+        }
+    }
+
 }
 
 const isDesign = true;
@@ -21,6 +42,15 @@ function buildParagraph(){
             <div class="paragraph" contenteditable="true"></div>
         </div>
     `
+}
+
+function buildImage(id){
+    return `
+        <div class="imageContainer" id="${id}" contenteditable="false">
+            <img id="${id}" src="./test.jpg"/>
+        </div>
+    `
+
 }
 
 function registerBtnEvent(id, event){
@@ -62,7 +92,7 @@ var editMenu = new EditMenu(isDesign)
 function toggleFontSize(size){
     let sel = getSelection()
     if (sel.focusNode.parentNode.nodeName == "FONT"){
-        document.execCommand("removeFormat", false, null)  
+        document.execCommand("fontSize", false, 3)    
     }
     else {
         document.execCommand("fontSize", false, size)    
@@ -80,14 +110,13 @@ const focusInEvent = (e)=>{
 }
 
 const onBtnH1 = (e)=>{
-    console.log(getSelection())
     toggleFontSize(7)
 }
 const onBtnH2 = (e)=>{
-    document.execCommand("heading", false, "h2")
+    toggleFontSize(5)
 }
 const onBtnH3 = (e)=>{
-    document.execCommand("fontSize", false, 3) // 3이 기본 사이즈 인듯.
+    toggleFontSize(3)
 }
 
 const onBtnBold = (e)=>{
@@ -134,6 +163,23 @@ const onBtnDelete = (e)=>{
         currentParagraph.remove()
     }
 }
+
+const onBtnInsertImage = (e)=>{
+    
+    if (editorData.paragraphCursor != null){
+        let sel = getSelection()
+        let imageId = Date.now()
+
+        document.execCommand("insertHtml", false, buildImage(imageId))
+        editorData.imageMap[imageId] = false
+
+        console.log(imageId, sel)
+        interface.onRequestImageUpload()
+    }
+    
+    
+}
+
 $(document).on("focusin", "#editor .paragraphContainer", focusInEvent)
 
 registerBtnEvent("#btnH1", onBtnH1)
@@ -143,6 +189,7 @@ registerBtnEvent("#btnBold", onBtnBold)
 registerBtnEvent("#btnItalic", onBtnItalic)
 registerBtnEvent("#btnUnderline", onBtnUnderline)
 registerBtnEvent("#btnCancelline", onBtnCancelline)
+registerBtnEvent("#btnInsertImage", onBtnInsertImage)
 
 registerBtnEvent("#btnEsc", onBtnEsc)
 registerBtnEvent("#btnAdd", onBtnAdd)

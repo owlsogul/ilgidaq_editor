@@ -22,7 +22,11 @@ div#editor .paragraph:hover {
     background: rgba(0, 0, 0, 0.5);
 }
 
+div#editor .paragraph div.imageContainer { text-align: center; height: 100px; }
+div#editor .paragraph div.imageContainer img{ max-height: 100%; max-width: 100%;}
+
 .paragraphContainer { position: relative; }
+
 
 .btnBox {}
 .btn { padding: 5; color: #ffffff; background: red; border-radius: 5px; display: inline-block;}
