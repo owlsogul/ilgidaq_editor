@@ -27,17 +27,14 @@ div#editor .paragraph div.imageContainer img{ max-height: 100%; max-width: 100%;
 
 .paragraphContainer { position: relative; }
 
+.btnContainer { height: 100%; display: inline-block;}
+.btn{ max-height: 50%;  }
+.btn path {fill: #ffffff;}
+.btn:hover path { fill: #FF4218; }
 
-.btnBox {}
-.btn { padding: 5; color: #ffffff; background: red; border-radius: 5px; display: inline-block;}
+#btnH1 { max-height: 70%; }
+#btnH2 { max-height: 60%; }
 
-#edit-prefix-menu { height: 40px; background: rgba(0, 0, 0, 1); }
-#btnH1.btn { font-size: medium; }
-#btnH2.btn { font-size: smaller; }
-#btnH3.btn { font-size: xx-small; }
-#btnBold.btn{ font-weight: bold; }
-#btnItalic.btn { font-style: italic; }
-#btnUnderline.btn { text-decoration: underline; }
-#btnCancelline.btn { text-decoration: line-through; }
+#edit-prefix-menu { height: 40px; background: #000000; }
 
-#edit-suffix-menu { height: 40px; background: rgba(0, 0, 0, 1); }
+#edit-suffix-menu { height: 0; background: #ffffff; }
