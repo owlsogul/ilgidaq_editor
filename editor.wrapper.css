@@ -1,0 +1,19 @@
+body { margin: 0; }
+
+#edit-prefix-menu { height: 7vmin; background: #000000; position: relative; display: flex; }
+.btnContainer { height: 100%; display:inline-flex; flex-direction: column; justify-content: flex-end;}
+
+.btnContainer .btnTopMargin {}
+.btnContainer .btnBottomMargin { height: 30%; }
+.btn { height: 40%; margin: 0 5px; }
+.btn path {fill: #ffffff;}
+.btn:hover path { fill: #FF4218; }
+
+#btnMarginFirst { width: 20px;}
+#btnMarginSecond { width: 5px;}
+
+#btnH1 { height: 50%; }
+#btnH2 { height: 45%; }
+
+
+#editor-wrapper { width: 100%; height: 100%; overflow-x: hidden;}

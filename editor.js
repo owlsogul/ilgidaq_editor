@@ -2,30 +2,16 @@ var editorContainer = document.getElementById("editor-container");
 var editor = document.getElementById("editor");
 var editorData = {
     paragraphCursor: null,
+    lastFocus: null,
     imageMap: {}
 }
-
-var interface = {
-    
-    // call to platform
-    onRequestImageUpload: (id)=>{ console.log("on request image upload") },
-
-    // call from platform
-
-    /**
-     * 
-     * @param {string} id 
-     * @param {string} path if null, remove image
-     */
-    setImagePath: (id, path)=>{
-        if (id == null) {
-            alert("잘못된 이미지 입니다.")
-        }
-    }
-
+var msgEvents = {}
+function registerMsgEvent(key, callback){
+    var callbacks = msgEvents[key];
+    if (!callbacks) { callbacks = []; msgEvents[key] = callbacks; }
+    callbacks.push(callback);
 }
 
-const isDesign = true;
 function isMobile(){
     var UserAgent = navigator.userAgent;
     if (UserAgent.match(/iPhone|iPod|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || UserAgent.match(/LG|SAMSUNG|Samsung/) != null){
@@ -35,6 +21,31 @@ function isMobile(){
         return false;
     }
 }
+
+const focusInEvent = (e)=>{   
+    let paraContainer = e.currentTarget
+    let para = $(paraContainer).children(".paragraph")
+    //editMenu.displayOnParagraph(e.currentTarget)
+    editorData.paragraphCursor = paraContainer
+
+    // 컴퓨터 환경에서 focus와 click을 동시에 사용하기 위해서 필요함
+    if (isMobile() == false && e.target != para) $(e.target).trigger("click") 
+}
+$(document).on("focusin", "#editor .paragraphContainer", focusInEvent)
+
+
+window.addEventListener("message", (e)=>{
+    var key = e.data.key
+    var data = e.data.data;
+    console.log(e.data)
+    if (msgEvents[key]){
+        var callbacks = msgEvents[key];
+        for(var idx = 0; idx < callbacks.length; idx++){
+            callbacks[idx](data)
+        }
+    }
+})
+
 
 function buildParagraph(){
     return `
@@ -50,63 +61,17 @@ function buildImage(id){
             <img id="${id}" src="./test.jpg"/>
         </div>
     `
-
 }
-
-function registerBtnEvent(id, event){
-    $(document).on("click", id, event)
-}
-
-class EditMenu {
-    constructor(isDesign) {
-        this.isDesign = isDesign
-        this.editMenuContainer = $("#edit-menu-container")
-        this.editBalnk = $("edit-blank")
-        this.prefixMenu = $("#edit-prefix-menu").toggle(isDesign)
-        this.suffixMenu = $("#edit-suffix-menu").toggle(isDesign)
-    }
-
-    /**
-     * 문단 컨테이너 위에 에디터를 보여주는 메소드
-     * @param {*} targetContainer paragraphContainer
-     */
-    displayOnParagraph(targetContainer){
-        var paragraph = $(targetContainer).children(".paragraph")
-        this.prefixMenu.insertBefore(paragraph)
-        this.suffixMenu.insertAfter(paragraph)
-        this.prefixMenu.show()
-        this.suffixMenu.show();
-    }
-
-    hide(){
-        this.suffixMenu.prependTo(editor)
-        this.prefixMenu.prependTo(editor)
-        this.suffixMenu.hide()
-        this.prefixMenu.hide()
-    }
-}
-
-var editor = $("#editor")
-var editMenu = new EditMenu(isDesign)
 
 function toggleFontSize(size){
     let sel = getSelection()
     if (sel.focusNode.parentNode.nodeName == "FONT"){
+        // TODO 같은 크기일 경우만 3으로 되돌리게 하기
         document.execCommand("fontSize", false, 3)    
     }
     else {
         document.execCommand("fontSize", false, size)    
     }
-}
-
-const focusInEvent = (e)=>{   
-    let paraContainer = e.currentTarget
-    let para = $(paraContainer).children(".paragraph")
-    editMenu.displayOnParagraph(e.currentTarget)
-    editorData.paragraphCursor = paraContainer
-
-    // 컴퓨터 환경에서 focus와 click을 동시에 사용하기 위해서 필요함
-    if (isMobile() == false && e.target != para) $(e.target).trigger("click") 
 }
 
 const onBtnH1 = (e)=>{
@@ -135,10 +100,6 @@ const onBtnCancelline = (e)=>{
     document.execCommand("strikeThrough", false, true)
 }
 
-const onBtnEsc = (e)=>{
-    editMenu.hide()
-}
-
 const onBtnAdd = (e)=>{
     let newParagraph = $(buildParagraph())
     let currentParagraph = $(editorData.paragraphCursor)
@@ -152,10 +113,8 @@ const onBtnDelete = (e)=>{
     let num = containers.length
     if (num == 1){ // 1개 밖에 없었을 경우
         containers.children(".paragraph").text("")
-        editMenu.hide()
     }
     else { // 2개 이상일 경우
-        editMenu.hide()
         let currentParagraph = $(editorData.paragraphCursor)
         currentParagraph.blur()
         let nextParagraph = currentParagraph.prev(".paragraphContainer")
@@ -163,6 +122,8 @@ const onBtnDelete = (e)=>{
         currentParagraph.remove()
     }
 }
+
+const onBtnEsc = (e)=>{ console.log("exit")}
 
 const onBtnInsertImage = (e)=>{
     
@@ -177,20 +138,24 @@ const onBtnInsertImage = (e)=>{
         interface.onRequestImageUpload()
     }
     
-    
 }
+registerMsgEvent("pressBtn", (data)=>{
+    $(editorData.paragraphCursor).children(".paragraph").focus()
+    switch(data.btnId){
+        case "btnH1": onBtnH1(); break;
+        case "btnH2": onBtnH2(); break;
+        case "btnH3": onBtnH3(); break;
+        case "btnBold": onBtnBold(); break;
+        case "btnItalic": onBtnItalic(); break;
+        case "btnUnderline": onBtnUnderline(); break;
+        case "btnCancelline": onBtnCancelline(); break;
+        case "btnInsertImage": onBtnInsertImage(); break;
+        case "btnEsc": onBtnEsc(); break;
+        case "btnAdd": onBtnAdd(); break;
+        case "btnDelete": onBtnDelete(); break;
+    }
+})
 
-$(document).on("focusin", "#editor .paragraphContainer", focusInEvent)
 
-registerBtnEvent("#btnH1", onBtnH1)
-registerBtnEvent("#btnH2", onBtnH2)
-registerBtnEvent("#btnH3", onBtnH3)
-registerBtnEvent("#btnBold", onBtnBold)
-registerBtnEvent("#btnItalic", onBtnItalic)
-registerBtnEvent("#btnUnderline", onBtnUnderline)
-registerBtnEvent("#btnCancelline", onBtnCancelline)
-registerBtnEvent("#btnInsertImage", onBtnInsertImage)
 
-registerBtnEvent("#btnEsc", onBtnEsc)
-registerBtnEvent("#btnAdd", onBtnAdd)
-registerBtnEvent("#btnDelete", onBtnDelete)
+
