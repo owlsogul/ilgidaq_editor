@@ -12,6 +12,10 @@ function registerMsgEvent(key, callback){
     callbacks.push(callback);
 }
 
+function sendMessage(key, data){
+    window.parent.postMessage({ key: key, data: data }, "*")
+}
+
 function isMobile(){
     var UserAgent = navigator.userAgent;
     if (UserAgent.match(/iPhone|iPod|Android|Windows CE|BlackBerry|Symbian|Windows Phone|webOS|Opera Mini|Opera Mobi|POLARIS|IEMobile|lgtelecom|nokia|SonyEricsson/i) != null || UserAgent.match(/LG|SAMSUNG|Samsung/) != null){
@@ -24,9 +28,14 @@ function isMobile(){
 
 const focusInEvent = (e)=>{   
     let paraContainer = e.currentTarget
-    let para = $(paraContainer).children(".paragraph")
-    //editMenu.displayOnParagraph(e.currentTarget)
+    let _paraContainer = $(paraContainer)
+    let para = _paraContainer.children(".paragraph")
     editorData.paragraphCursor = paraContainer
+    
+    let idx = $(".paragraphContainer").index(paraContainer)
+    let y = _paraContainer[0].offsetTop
+
+    sendMessage("focus", { idx: idx, y: y })
 
     // 컴퓨터 환경에서 focus와 click을 동시에 사용하기 위해서 필요함
     if (isMobile() == false && e.target != para) $(e.target).trigger("click") 
@@ -123,7 +132,7 @@ const onBtnDelete = (e)=>{
     }
 }
 
-const onBtnEsc = (e)=>{ console.log("exit")}
+const onBtnEsc = (e)=>{ console.log("exit"); setBodyTopMargin(-1); }
 
 const onBtnInsertImage = (e)=>{
     
