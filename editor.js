@@ -74,7 +74,6 @@ function buildImage(id){
 
 function getStyle(){
 	let sel = $(getSelection().focusNode).parent("font")
-	console.log(sel)
 	return {
 		fontSize: sel.attr("size"),
 		isBold: document.queryCommandState("bold"),
@@ -84,11 +83,18 @@ function getStyle(){
 	}
 }
 
+function sendStyle(){
+	sendMessage("style", getStyle())
+}
+
+document.addEventListener('selectionchange', () => {
+	sendStyle()
+});
+
 function toggleFontSize(size){
     let sel = getSelection()
 	let style= getStyle()
     if (sel.focusNode.parentNode.nodeName == "FONT" && style.fontSize == size){
-        // TODO 같은 크기일 경우만 3으로 되돌리게 하기
         document.execCommand("fontSize", false, 3)    
     }
     else {
@@ -98,28 +104,35 @@ function toggleFontSize(size){
 
 const onBtnH1 = (e)=>{
     toggleFontSize(7)
+	sendStyle()
 }
 const onBtnH2 = (e)=>{
     toggleFontSize(5)
+	sendStyle()
 }
 const onBtnH3 = (e)=>{
     toggleFontSize(3)
+	sendStyle()
 }
 
 const onBtnBold = (e)=>{
     document.execCommand("bold", false, true)
+	sendStyle()
 }
 
 const onBtnItalic = (e)=>{
     document.execCommand("italic", false, true)
+	sendStyle()
 }
 
 const onBtnUnderline = (e)=>{
     document.execCommand("underline", false, true)
+	sendStyle()
 }
 
 const onBtnCancelline = (e)=>{
     document.execCommand("strikeThrough", false, true)
+	sendStyle()
 }
 
 const onBtnAdd = (e)=>{

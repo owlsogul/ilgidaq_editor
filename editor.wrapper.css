@@ -9,6 +9,7 @@ body { margin: 0; position: relative; }
 .btn { height: 40%; margin: 0 5px; }
 .btn path {fill: #ffffff;}
 .btn:hover path { fill: #FF4218; }
+.btn.selected path { fill: #FF4218; }
 
 #btnMarginFirst { width: 20px;}
 #btnMarginSecond { width: 5px;}

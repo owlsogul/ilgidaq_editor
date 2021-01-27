@@ -62,6 +62,7 @@ window.addEventListener("message", (e)=>{
 })
 
 // 메시지 처리 부분
+// 1) focus
 editorWrapper.registerMessageHandler("focus", (data)=>{
     var idx = data.idx;
     var y = data.y;
@@ -69,6 +70,18 @@ editorWrapper.registerMessageHandler("focus", (data)=>{
     editMenu.displayOnParagraph(idx, y)
 })
 
+// 2) 스타일 처리 부분
+editorWrapper.registerMessageHandler("style", (data)=>{
+	// TODO: style 메시지 양 최적화
+    console.log(data)
+	$("#btnH1").toggleClass("selected", data.fontSize == "7")
+	$("#btnH2").toggleClass("selected", data.fontSize == "5")
+	$("#btnH3").toggleClass("selected", !data.fontSize || data.fontSize == "3")
+	$("#btnBold").toggleClass("selected", data.isBold)
+	$("#btnItalic").toggleClass("selected", data.isItalic)
+	$("#btnUnderline").toggleClass("selected", data.isUnderline)
+	$("#btnCancelline").toggleClass("selected", data.isCancelline)
+})
 
 
 // 
