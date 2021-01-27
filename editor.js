@@ -72,9 +72,22 @@ function buildImage(id){
     `
 }
 
+function getStyle(){
+	let sel = $(getSelection().focusNode).parent("font")
+	console.log(sel)
+	return {
+		fontSize: sel.attr("size"),
+		isBold: document.queryCommandState("bold"),
+		isItalic: document.queryCommandState("italic"),
+		isUnderline: document.queryCommandState("underline"),
+		isCancelline: document.queryCommandState("strikeThrough")
+	}
+}
+
 function toggleFontSize(size){
     let sel = getSelection()
-    if (sel.focusNode.parentNode.nodeName == "FONT"){
+	let style= getStyle()
+    if (sel.focusNode.parentNode.nodeName == "FONT" && style.fontSize == size){
         // TODO 같은 크기일 경우만 3으로 되돌리게 하기
         document.execCommand("fontSize", false, 3)    
     }
