@@ -1,6 +1,5 @@
 body { margin: 0; position: relative; }
-body.isFirst { padding-top: 7vmin; }
-#top-margin { height: 7vmin; }
+#top-margin {}
 
 #edit-prefix-menu { width: 100%; height: 7vmin; background: #000000; position: absolute; top: 0; display: flex; }
 .btnContainer { height: 100%; display:inline-flex; flex-direction: column; justify-content: flex-end;}

@@ -132,7 +132,7 @@ const onBtnDelete = (e)=>{
     }
 }
 
-const onBtnEsc = (e)=>{ console.log("exit"); setBodyTopMargin(-1); }
+const onBtnEsc = (e)=>{ console.log("exit"); }
 
 const onBtnInsertImage = (e)=>{
     
@@ -149,7 +149,7 @@ const onBtnInsertImage = (e)=>{
     
 }
 registerMsgEvent("pressBtn", (data)=>{
-    $(editorData.paragraphCursor).children(".paragraph").focus()
+    if (data.btnId != "btnEsc") $(editorData.paragraphCursor).children(".paragraph").focus()
     switch(data.btnId){
         case "btnH1": onBtnH1(); break;
         case "btnH2": onBtnH2(); break;

@@ -28,17 +28,21 @@ class EditMenu {
     }
 
     displayOnParagraph(idx, y){
-        let vw = window.innerWidth
-        let vh = window.innerHeight
-        let vmin = vw < vh ? vw : vh
-        
-        this.topMargin.css("height", )
-        this.prefixMenu.css("top", )
+		console.log(idx, y, this.topMargin)
+		
+		let vw = window.innerWidth
+		let vh = window.innerHeight
+		let vmin = vw < vh ? vw : vh
+		
+        //this.topMargin.css({"height": `calc(100%-50px)`})
+		this.topMargin.height("7vmin").height(`-=${y}`)
+		console.log(y, 0.07*vmin)
+        if (y > 0.07*vmin)  this.prefixMenu.css("top", y).css("top", "-=7vmin")
+		else this.prefixMenu.css("top", 0)
         this.prefixMenu.show()
     }
 
     hide(){
-        this.topMargin.toggleClass("isFirst", false)
         this.prefixMenu.hide()
     }
 }
@@ -77,15 +81,17 @@ function registerBtnEvent(id, event){
     editorWrapper.sendButtonMessage(id)
 }
 
-function closeEditMenu(){
-    return ()=>{editMenu.hide()}
+function closeEditMenu(btnId){
+    return ()=>{
+        editorWrapper.sendButtonMessage(btnId)
+		editMenu.hide()
+	}
 }
 
 function baseBtnPressCallback(btnId, extend){
     return ()=>{
         editorWrapper.editor.contentWindow.focus()
         editorWrapper.sendButtonMessage(btnId)
-        if (extend) extend()
     }
 }
 
@@ -98,7 +104,7 @@ registerBtnEvent("btnUnderline", baseBtnPressCallback("btnUnderline"))
 registerBtnEvent("btnCancelline", baseBtnPressCallback("btnCancelline"))
 registerBtnEvent("btnInsertImage", baseBtnPressCallback("btnInsertImage"))
 
-registerBtnEvent("btnEsc", baseBtnPressCallback("btnEsc", closeEditMenu()))
+registerBtnEvent("btnEsc", closeEditMenu("btnEsc"))
 registerBtnEvent("btnAdd", baseBtnPressCallback("btnAdd"))
 registerBtnEvent("btnDelete", baseBtnPressCallback("btnDelete"))
 
