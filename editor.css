@@ -26,4 +26,3 @@ div#editor .paragraph div.imageContainer { text-align: center; height: 100px; }
 div#editor .paragraph div.imageContainer img{ max-height: 100%; max-width: 100%;}
 
 .paragraphContainer { position: relative; }
-.paragraphContainer.selected { padding-top: 7vmin; }

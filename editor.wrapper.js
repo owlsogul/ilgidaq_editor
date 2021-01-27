@@ -34,9 +34,8 @@ class EditMenu {
 		let vh = window.innerHeight
 		let vmin = vw < vh ? vw : vh
 		
-        //this.topMargin.css({"height": `calc(100%-50px)`})
+		// TODO: resizing when screen size is changed
 		this.topMargin.height("7vmin").height(`-=${y}`)
-		console.log(y, 0.07*vmin)
         if (y > 0.07*vmin)  this.prefixMenu.css("top", y).css("top", "-=7vmin")
 		else this.prefixMenu.css("top", 0)
         this.prefixMenu.show()
