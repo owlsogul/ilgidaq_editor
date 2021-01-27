@@ -73,7 +73,6 @@ editorWrapper.registerMessageHandler("focus", (data)=>{
 // 2) 스타일 처리 부분
 editorWrapper.registerMessageHandler("style", (data)=>{
 	// TODO: style 메시지 양 최적화
-    console.log(data)
 	$("#btnH1").toggleClass("selected", data.fontSize == "7")
 	$("#btnH2").toggleClass("selected", data.fontSize == "5")
 	$("#btnH3").toggleClass("selected", !data.fontSize || data.fontSize == "3")
